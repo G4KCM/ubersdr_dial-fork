@@ -10,7 +10,7 @@ build for the one you have (see [Hardware](#hardware)):
 | Board | Build environment | Tested with |
 | --- | --- | --- |
 | Guition **JC3636K718** | `jc3636k718` | JC3636K718C-I-Y1(RD) ([AliExpress](https://www.aliexpress.com/item/1005011771382178.html)) |
-| Guition **JC3636K518C** (Waveshare ESP32-S3-Knob-Touch-LCD-1.8 layout) | `jc3636k518` | JC3636K518C |
+| Guition **JC3636K518C**, V2 board (Waveshare ESP32-S3-Knob-Touch-LCD-1.8 layout) | `jc3636k518` | JC3636K518C_I_YR1 |
 
 The web flasher and over-the-air updates publish the **JC3636K718** build
 only. Flash a JC3636K518C from source.
@@ -146,13 +146,20 @@ Where they differ (pin maps in `src/hw/board.h`):
 | Touch SDA / SCL / INT / RST | 9 / 10 / 7 / 8 | 11 / 12 / 9 / 10 |
 | Knob clockwise / anticlockwise | 1 / 2 | 8 / 7 |
 | I2S BCK / WS / DOUT | 3 / 45 / 42 | 39 / 40 / 41 |
-| DAC mute | GPIO46 | handled by the board's second chip (ESP32-U4WDH) |
+| DAC mute | GPIO46 | the board's second chip (ESP32-U4WDH) |
+| DAC source switch | none | CH445P on GPIO0; its pull-up selects the S3 |
 | WS2812 LED ring | 13 LEDs on GPIO0 | none |
 | Haptic motor | ERM | LRA |
 | Battery ADC | GPIO6 | GPIO1 |
 
 On the JC3636K518C, the display is the right way up with the USB-C socket at
 the bottom.
+
+The `jc3636k518` build is for the **V2** JC3636K518C. On a V1 board the DAC is
+wired only to the second chip, and GPIO39/40 are a serial link to it, so
+there's no audio from the S3. The haptic driver's enable pin is also on GPIO38
+there. Display, touch, knob and battery use the same pins on both. If audio
+plays and the haptic buzzes, it's a V2.
 
 ## Building
 

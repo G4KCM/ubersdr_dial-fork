@@ -1,6 +1,6 @@
 // Board pin maps. Pick the board with a build flag (see platformio.ini):
 //   (default)            Guition JC3636K718  - LED ring, DRV2605 ERM, PCM5100A on the S3
-//   -DBOARD_JC3636K518   Guition JC3636K518C / Waveshare ESP32-S3-Knob-Touch-LCD-1.8
+//   -DBOARD_JC3636K518   Guition JC3636K518C / Waveshare ESP32-S3-Knob-Touch-LCD-1.8 (V2 board)
 #pragma once
 
 #define LCD_W 360
@@ -8,8 +8,12 @@
 
 #if defined(BOARD_JC3636K518)
 // ---------------------------------------------------------------- JC3636K518C
-// Pins from the Waveshare/Guition community configs (lcdwizard preset,
-// KrX3D WaveShare-Knob-Esp32S3, HA forum JC3636K518C-I-YR thread).
+// V2 hardware only (checked against the V2 schematic). The two revisions
+// share the display, touch, knob, battery and haptic I2C pins, but on V1:
+//   - the PCM5100A is fed only by the second chip (ESP32-U4WDH IO25/26/27);
+//     S3 GPIO39/40 are the UART to that chip, so S3 I2S audio is silent;
+//   - the DRV2605 EN pin is S3 GPIO38 (tied to 3V3 on V2).
+// A board where the haptic answers and S3 audio plays is a V2.
 #define BOARD_NAME "JC3636K518"
 
 // ST77916 QSPI panel
@@ -33,8 +37,11 @@
 #define PIN_KNOB_CW 8
 #define PIN_KNOB_CCW 7
 
-// PCM5100A I2S DAC. Its mute line and the headphone/speaker switch belong to
-// the board's second chip (ESP32-U4WDH), so there's no mute pin here.
+// PCM5100A I2S DAC, reached through a CH445P switch that picks the S3 or the
+// second chip (ESP32-U4WDH) as its source. S3 GPIO0 (I2S_SWITCH_IN, also the
+// BOOT strap) selects it; its 10K pull-up (R58) selects the S3, so the
+// firmware leaves GPIO0 alone. The DAC's XSMT (mute) is the second chip's
+// IO32, so there's no mute pin here. S3 GPIO38/48 are a UART to that chip.
 #define PIN_I2S_BCK 39
 #define PIN_I2S_WS 40
 #define PIN_I2S_DO 41
